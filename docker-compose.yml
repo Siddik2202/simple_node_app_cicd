@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mysql:8
+    container_name: db
+    environment:
+      MYSQL_DATABASE: sampledb
+      MYSQL_ROOT_PASSWORD: siddik
+      MYSQL_USER: siddik
+      MYSQL_PASSWORD: siddik
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      DB_HOST: db
+      DB_USER: siddik
+      DB_PASSWORD: siddik
+      DB_NAME: sampledb
+
+volumes:
+  db_data:                                                          1,1           Top
