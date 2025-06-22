@@ -20,4 +20,4 @@ vi) Here we use healthcheck for avoing error Econnrefused Error, means app run b
 
 vii) Then run docker-compose file docker compose up / -d for remove use docker compose down.
 
-Thank You
+Thank You So much !
