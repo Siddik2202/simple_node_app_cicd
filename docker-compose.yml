@@ -6,7 +6,7 @@ services:
     environment:
       MYSQL_DATABASE: sampledb
       MYSQL_USER: siddik
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: siddik
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
