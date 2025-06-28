@@ -9,12 +9,13 @@ services:
       MYSQL_PASSWORD: siddik
     volumes:
       - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # 👈 Add this
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
-
+      
   app:
     build: .
     container_name: app
