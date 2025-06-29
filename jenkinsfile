@@ -1,0 +1,59 @@
+pipeline {
+    agent { label 'node' } // Jenkins agent/slave label
+
+    environment {
+        COMPOSE_PROJECT_NAME = "nodejs_project"
+        COMPOSE_HTTP_TIMEOUT = '200'
+    }
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                echo "📥 Cloning Node.js project..."
+                git url: 'https://github.com/Siddik2202/simple_node_app', branch: 'main'
+            }
+        }
+
+        stage('Start Services with Docker Compose') {
+            steps {
+                echo '🐳 Bringing up services using docker-compose...'
+                sh 'docker-compose down -v'
+                sh 'docker-compose up -d --build'
+            }
+        }
+
+        stage('Wait for MySQL to Initialize') {
+            steps {
+                echo "⏳ Giving MySQL a moment to initialize..."
+                sh 'sleep 25' // slight increase for slower containers
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                echo "🧪 Testing if Node.js app is running..."
+                sh '''
+                    sleep 5
+                    STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000)
+                    if [ "$STATUS" -eq 200 ]; then
+                        echo "✅ App is live!"
+                    else
+                        echo "❌ App failed to respond, got status code: $STATUS"
+                        exit 1
+                    fi
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ CI/CD Pipeline completed successfully!"
+        }
+        failure {
+            echo "❌ Pipeline failed. Please check logs."
+            sh 'docker-compose logs' // optional: print logs for debugging
+        }
+    }
+}
