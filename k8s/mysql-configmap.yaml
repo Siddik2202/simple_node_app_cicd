@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-initdb-config
+  # labels:
+  #   app: myapplication
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS sampledb;
+    CREATE USER IF NOT EXISTS 'siddik'@'%' IDENTIFIED BY 'siddik';
+    GRANT ALL PRIVILEGES ON sampledb.* TO 'siddik'@'%';
+    FLUSH PRIVILEGES;
+    USE sampledb;
+    CREATE TABLE IF NOT EXISTS nodeuser (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100),
+        mobile VARCHAR(15),
+        email VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
